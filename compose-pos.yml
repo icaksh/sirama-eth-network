@@ -1,0 +1,142 @@
+services:
+  sirama_pos_init:
+    image: "etclabscore/core-geth:version-1.12.14"
+    container_name: sirama_pos_init
+    command: "--datadir-=/root/.ethereum init /app/genesis.json"
+    volumes:
+      - ./poa/data:/root/.ethereum
+      - ./poa/genesis.json:/app/genesis.json
+
+  sirama_pos_el:
+    image: "etclabscore/core-geth:version-1.12.14"
+    container_name: sirama_pos_el
+    restart: on-failure
+    command:
+      - --http
+      - --http.api=admin,eth,net,web3
+      - --http.addr=0.0.0.0
+      - --http.port=8545
+      - --http.vhosts=*
+      - --http.corsdomain=*
+      - --authrpc.vhosts=*
+      - --authrpc.addr=0.0.0.0
+      - --authrpc.port=8551
+      - --authrpc.jwtsecret=/poa/jwtsecret
+      - --datadir=/root/.ethereum
+      - --identity=Huemint
+      - --networkid=1131976
+      - --syncmode=full
+      - --cache=1028
+      - --rpc.allow-unprotected-txs
+      - --port=30303
+      - --gcmode=full
+      - --cache.preimages
+      - --crypto.kzg=gokzg
+    ports:
+      - 48545:8545
+      - 48546:8546
+      - 44303:30303/tcp
+      - 44303:30303/udp
+    depends_on:
+      sirama_pos_init:
+        condition: service_completed_successfully
+    volumes:
+      - ./pos/data:/root/.ethereum
+      - ./pos/config:/app/config
+
+  sirama_pos_cl:
+    image: "sigp/lighthouse:v4.5.0" 
+    container_name: sirama_pos_cl
+    restart: on-failure
+    command:
+      - lighthouse
+      - bn
+      - --gui
+      - --eth1
+      - --staking
+      - --http
+      - --http-port=5052
+      - --http-allow-sync-stalled 
+      - --http-address=0.0.0.0
+      - --subscribe-all-subnets
+      - --http-allow-origin=*
+      - --debug-level=info
+      - --datadir=/consensus
+      - --testnet-dir=/config
+      - --disable-enr-auto-update
+      - --enr-address=0.0.0.0
+      - --enr-udp-port=9000
+      - --enr-tcp-port=9000
+      - --discovery-port=9000
+      - --port=9002
+      - --genesis-backfill
+      - --target-peers=400
+      - --metrics
+      - --metrics-address=0.0.0.0
+      - --metrics-allow-origin=*
+      - --metrics-port=5054
+      - --execution-endpoints=http://sirama_pos_el:8551
+      - --eth1-endpoints=http://sirama_pos_el:8545
+      - --execution-jwt=/config/jwtsecret
+    depends_on:
+      sirama_pos_el:
+        condition: service_started
+    ports:
+      - 45052:5052
+      - 45054:5054
+      - 49000:9000/tcp
+      - 49000:9000/udp
+    volumes:
+      - ./pos/consensus:/consensus
+      - ./pos/config:/config
+ 
+  sirama_pos_init:
+    image: "sigp/lighthouse:v4.5.0"
+    container_name: sirama_pos_init
+    command: 
+      - lighthouse
+      - account
+      - validator
+      - import
+      - --testnet-dir=/config
+      - --datadir=/validator
+      - --directory=/validator_keys
+      - --password-file=/config/password.txt
+      - --reuse-password
+    volumes:
+      - ./pos/config:/config
+      - ./pos/validator:/validator
+      - ./pos/validator_keys:/validator_keys
+
+  sirama_pos_vc:
+    image: "sigp/lighthouse:v4.5.0"
+    container_name: sirama_pos_vc
+    restart: on-failure
+    command:
+      - lighthouse
+      - vc
+      - --http
+      - --unencrypted-http-transport
+      - --init-slashing-protection
+      - --http-allow-origin=*
+      - --http-port=5062
+      - --http-address=0.0.0.0
+      - --metrics
+      - --metrics-address=0.0.0.0
+      - --metrics-port=5064
+      - --metrics-allow-origin=*
+      - --datadir=/validator
+      - --testnet-dir=/config
+      - --suggested-fee-recipient=0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
+      - --beacon-nodes=http://sirama_pos_cl:5052
+    depends_on:
+      sirama_pos_init:
+        condition: service_completed_successfully
+      sirama_pos_cl:
+        condition: service_started
+    volumes:
+      - ./pos/config:/config
+      - ./pos/validator:/validator
+    ports:
+      - 45062:5062
+      - 45064:5064
