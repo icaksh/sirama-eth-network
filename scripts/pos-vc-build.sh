@@ -1,4 +1,3 @@
-#!/bin/bash
 # 
 # This project was a thesis project for PP2712801
 # at Sebelas Maret University
@@ -11,9 +10,4 @@
 #
 #
 
-# Download and execute the Docker installation script
-curl -fsSL https://get.docker.com | bash
-sudo sh get-docker.sh
-
-# Set Permission Docker
-sudo chmod 666 /var/run/docker.sock
+docker run -it --rm -v $(pwd)/pos/validator_keys:/app/validator_keys engramnet/staking-deposit-cli:dencun existing-mnemonic --num_validators=1 --validator_start_index=0

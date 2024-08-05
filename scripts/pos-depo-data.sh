@@ -1,4 +1,15 @@
 #!/bin/bash
+# 
+# This project was a thesis project for PP2712801
+# at Sebelas Maret University
+#
+# The copyright holder grant the freedom to copy, modify, 
+# convey, adapt, and/or redistribute this work
+# under the terms of the BSD 3-Clause License.
+#
+# Palguno Wicaksono <hello@icaksh.my.id>
+#
+#
 
 amount=32000000000
 smin=0
@@ -9,8 +20,8 @@ eth2-val-tools deposit-data \
   --source-max=$smax \
   --amount=$amount \
   --fork-version=0x10000131 \
-  --withdrawals-mnemonic="test test test test test test test test test test test junk" \
-  --validators-mnemonic="test test test test test test test test test test test junk" > testnet_deposit_$smin\_$smax.txt
+  --withdrawals-mnemonic=" " \
+  --validators-mnemonic=" " > testnet_deposit_$smin\_$smax.txt
 
 while read x; do
    account_name="$(echo "$x" | jq '.account')"
@@ -18,8 +29,8 @@ while read x; do
    echo "Sending deposit for validator $account_name $pubkey"
    ethereal beacon deposit \
       --allow-unknown-contract=true \
-      --address="0x4242424242424242424242424242424242424242" \
-      --connection=https://tokio-archive.engram.tech \
+      --address="0x11319760736562656c61736d6172657400000000" \
+      --connection= \
       --data="$x" \
       --allow-excessive-deposit \
       --value="$amount" \

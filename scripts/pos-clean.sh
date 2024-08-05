@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 # 
 # This project was a thesis project for PP2712801
 # at Sebelas Maret University
@@ -11,9 +11,9 @@
 #
 #
 
-# Download and execute the Docker installation script
-curl -fsSL https://get.docker.com | bash
-sudo sh get-docker.sh
+# pruning and clean docker images and dangling images
+docker system prune -a
 
-# Set Permission Docker
-sudo chmod 666 /var/run/docker.sock
+# delete all data files
+sudo rm -rf ./pos/consensus/*
+sudo rm -rf ./pos/data/*

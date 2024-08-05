@@ -1,11 +1,22 @@
+# This project was a thesis project for PP2712801
+# at Sebelas Maret University
+#
+# The copyright holder grant the freedom to copy, modify, 
+# convey, adapt, and/or redistribute this work
+# under the terms of the BSD 3-Clause License.
+#
+# Palguno Wicaksono <hello@icaksh.my.id>
+#
+#
+
 services:
-  sirama_pos_init:
+  sirama_pos_el_init:
     image: "etclabscore/core-geth:version-1.12.14"
-    container_name: sirama_pos_init
-    command: "--datadir-=/root/.ethereum init /app/genesis.json"
+    container_name: sirama_pos_el_init
+    command: "--datadir=/root/.ethereum init /app/genesis.json"
     volumes:
-      - ./poa/data:/root/.ethereum
-      - ./poa/genesis.json:/app/genesis.json
+      - ./pos/data:/root/.ethereum
+      - ./pos/config/genesis.json:/app/genesis.json
 
   sirama_pos_el:
     image: "etclabscore/core-geth:version-1.12.14"
@@ -21,9 +32,9 @@ services:
       - --authrpc.vhosts=*
       - --authrpc.addr=0.0.0.0
       - --authrpc.port=8551
-      - --authrpc.jwtsecret=/poa/jwtsecret
+      - --authrpc.jwtsecret=/app/config/jwtsecret
       - --datadir=/root/.ethereum
-      - --identity=Huemint
+ 
       - --networkid=1131976
       - --syncmode=full
       - --cache=1028

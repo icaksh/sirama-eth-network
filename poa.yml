@@ -1,0 +1,68 @@
+# This project was a thesis project for PP2712801
+# at Sebelas Maret University
+#
+# The copyright holder grant the freedom to copy, modify, 
+# convey, adapt, and/or redistribute this work
+# under the terms of the BSD 3-Clause License.
+#
+# Palguno Wicaksono <hello@icaksh.my.id>
+#
+#
+
+services:
+  sirama_poa_init:
+    image: "etclabscore/core-geth:version-1.12.14"
+    container_name: "sirama_poa_init"
+    command: --datadir=/root/.ethereum init /app/genesis.json
+    volumes:
+      - ./poa/data:/root/.ethereum
+      - ./poa/genesis.json:/app/genesis.json
+    
+  sirama_poa_nodes:
+    image: "etclabscore/core-geth:version-1.12.14"
+    container_name: "sirama_poa_nodes"
+    restart: on-failure
+    command:
+      - --datadir=/root/.ethereum
+      - --http
+      - --http.api=eth,net,web3
+      - --http.corsdomain=*
+      - --http.addr=0.0.0.0
+      - --http.port=8545
+      - --http.vhosts=*
+      - --ws
+      - --ws.api=eth,net,web3
+      - --ws.addr=0.0.0.0
+      - --ws.port=8546
+      - --authrpc.addr=0.0.0.0
+      - --authrpc.port=8551
+      - --authrpc.jwtsecret=/app/jwtsecret
+      - --networkid=1131976
+      - --syncmode=full
+      - --gcmode
+      - 'archive'
+      - --port=30303
+      - --allow-insecure-unlock
+      - --unlock
+      - ${POA_ACCOUNT}
+      - --password=/app/password.txt
+      - --mine
+      - --miner.etherbase=${POA_ACCOUNT}
+      - --metrics.influxdb
+      - --metrics.influxdb.endpoint=${INFLUXDB_HOST}
+      - --metrics.influxdb.username=${INFLUXDB_USER}
+      - --metrics.influxdb.password=${INFLUXDB_PASSWORD}
+      - --metrics.influxdb.database=${INFLUXDB_DATABASE}
+      - --metrics.influxdb.tags=\"host=${HOSTNAME}-PoA\"
+    ports:
+      - 38545:8545
+      - 38546:8546
+      - 43303:30303/tcp
+      - 43303:30303/tcp
+    volumes:
+      - ./poa/data:/root/.ethereum
+      - ./poa/jwtsecret:/app/jwtsecret
+      - ./poa/password.txt:/app/password.txt
+    depends_on:
+      sirama_poa_init:
+        condition: service_completed_successfully

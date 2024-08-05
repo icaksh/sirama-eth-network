@@ -1,3 +1,14 @@
+# This project was a thesis project for PP2712801
+# at Sebelas Maret University
+#
+# The copyright holder grant the freedom to copy, modify, 
+# convey, adapt, and/or redistribute this work
+# under the terms of the BSD 3-Clause License.
+#
+# Palguno Wicaksono <hello@icaksh.my.id>
+#
+#
+
 # Extends the mainnet preset
 PRESET_BASE: 'mainnet'
 CONFIG_NAME: 'sirama'
@@ -5,7 +16,8 @@ CONFIG_NAME: 'sirama'
 # Genesis
 # ---------------------------------------------------------------
 # `2**14` (= 16,384)
-MIN_GENESIS_ACTIVE_VALIDATOR_COUNT: 100
+MIN_GENESIS_TIME: 1722798544
+MIN_GENESIS_ACTIVE_VALIDATOR_COUNT: 1
 GENESIS_FORK_VERSION: 0x10000131
 GENESIS_DELAY: 60
 
@@ -70,8 +82,8 @@ PROPOSER_SCORE_BOOST: 40
 
 # Deposit contract
 # ---------------------------------------------------------------
-DEPOSIT_CHAIN_ID: 131
-DEPOSIT_NETWORK_ID: 131
+DEPOSIT_CHAIN_ID: 1131976
+DEPOSIT_NETWORK_ID: 13131976
 DEPOSIT_CONTRACT_ADDRESS: 0x11319760736562656c61736d6172657400000000
 
 # Networking
