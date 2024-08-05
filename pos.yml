@@ -34,7 +34,6 @@ services:
       - --authrpc.port=8551
       - --authrpc.jwtsecret=/app/config/jwtsecret
       - --datadir=/root/.ethereum
- 
       - --networkid=1131976
       - --syncmode=full
       - --cache=1028
@@ -43,6 +42,12 @@ services:
       - --gcmode=full
       - --cache.preimages
       - --crypto.kzg=gokzg
+      - --metrics.influxdb
+      - --metrics.influxdb.endpoint=${INFLUXDB_HOST}
+      - --metrics.influxdb.username=${INFLUXDB_USER}
+      - --metrics.influxdb.password=${INFLUXDB_PASSWORD}
+      - --metrics.influxdb.database=${INFLUXDB_DATABASE}
+      - --metrics.influxdb.tags=\"host=${HOSTNAME}-PoS\"
     ports:
       - 48545:8545
       - 48546:8546
@@ -140,6 +145,7 @@ services:
       - --testnet-dir=/config
       - --suggested-fee-recipient=0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
       - --beacon-nodes=http://sirama_pos_cl:5052
+      
     depends_on:
       sirama_pos_init:
         condition: service_completed_successfully
