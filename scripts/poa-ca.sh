@@ -17,7 +17,7 @@ create_account(){
     last_rand=$(echo "$first_rand uns $sec_rand" | sha256sum)
     pass="UNS-$last_rand"
     echo $pass >> ./poa/password.txt
-    account=$(docker run -it --rm -v $(pwd)/pos:/app etclabscore/core-geth:version-1.12.14 account new --datadir /app/data --password /app/password.txt)
+    account=$(docker run -it --rm -v $(pwd)/poa:/app etclabscore/core-geth:version-1.12.14 account new --datadir /app/data --password /app/password.txt)
     # account=$(geth account new --datadir /chain/data --password /chain/password)
     echo $account | grep -oE '0x[0-9a-fA-F]{40}' >> ./poa/account.txt
 }
