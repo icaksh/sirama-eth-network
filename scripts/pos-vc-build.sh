@@ -10,4 +10,4 @@
 #
 #
 
-docker run -it --rm -v $(pwd)/pos/validator_keys:/app/validator_keys engramnet/staking-deposit-cli:dencun existing-mnemonic --num_validators=1 --validator_start_index=0
+docker run -it --rm -v $(pwd)/pos/validator_keys:/app/validator_keys engramnet/staking-deposit-cli:dencun existing-mnemonic --num_validators=2 --validator_start_index=0

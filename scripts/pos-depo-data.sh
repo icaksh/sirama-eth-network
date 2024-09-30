@@ -20,8 +20,8 @@ eth2-val-tools deposit-data \
   --source-max=$smax \
   --amount=$amount \
   --fork-version=0x10000131 \
-  --withdrawals-mnemonic=" " \
-  --validators-mnemonic=" " > testnet_deposit_$smin\_$smax.txt
+  --withdrawals-mnemonic="chicken hammer oil evidence arch ghost nephew accuse oven airport fiber spice define point name wool female blouse assault senior disagree bronze prize lounge" \
+  --validators-mnemonic="chicken hammer oil evidence arch ghost nephew accuse oven airport fiber spice define point name wool female blouse assault senior disagree bronze prize lounge" > testnet_deposit_$smin\_$smax.txt
 
 while read x; do
    account_name="$(echo "$x" | jq '.account')"
@@ -30,12 +30,12 @@ while read x; do
    ethereal beacon deposit \
       --allow-unknown-contract=true \
       --address="0x11319760736562656c61736d6172657400000000" \
-      --connection= \
+      --connection=./pos/data/geth.ipc \
       --data="$x" \
       --allow-excessive-deposit \
       --value="$amount" \
-      --from="0x000000000000000000000000000000000000000b" \
-      --privatekey="0x000000000000.....................0000000000000"
+      --from="0x6416C43ab43FD14A31B71A5FeC3511e0771ECBBD" \
+      --privatekey="ffedbead68e47c2de7e21632799e1af0e52f9eb2da67252268f1ea865b97d5c6"
    echo "Sent deposit for validator $account_name $pubkey"
    sleep 2
-done < testnet_deposit_$smin\_$smax.txt
+done < a.txt

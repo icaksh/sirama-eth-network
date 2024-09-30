@@ -1,0 +1,13 @@
+---
+- enabled: true
+  voting_public_key: "0xb1eb91e30fba7b41b5f45cda0160fd5f4083f84e1a81db65f1fa90e7630e2e334d39da83b2f94a5e8a7e9f38ed892616"
+  description: ""
+  type: local_keystore
+  voting_keystore_path: /validator/validators/0xb1eb91e30fba7b41b5f45cda0160fd5f4083f84e1a81db65f1fa90e7630e2e334d39da83b2f94a5e8a7e9f38ed892616/keystore-m_12381_3600_1_0_0-1723216864.json
+  voting_keystore_password: UNS-305aa59ba362fc6323a361acb1ab28b57cc7af01e66daf6dbac3ec6859535b91 -
+- enabled: true
+  voting_public_key: "0xb6f794691377d6e1534c7f65e3b9c51051551900332949ff2a592d056cc37397db7dc907795de25a96a395dcd0dad57c"
+  description: ""
+  type: local_keystore
+  voting_keystore_path: /validator/validators/0xb6f794691377d6e1534c7f65e3b9c51051551900332949ff2a592d056cc37397db7dc907795de25a96a395dcd0dad57c/keystore-m_12381_3600_0_0_0-1723216863.json
+  voting_keystore_password: UNS-305aa59ba362fc6323a361acb1ab28b57cc7af01e66daf6dbac3ec6859535b91 -

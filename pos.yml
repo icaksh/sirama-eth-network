@@ -11,15 +11,17 @@
 
 services:
   sirama_pos_el_init:
-    image: "etclabscore/core-geth:version-1.12.14"
+    image: "ethereum/client-go:v1.12.2"
     container_name: sirama_pos_el_init
     command: "--datadir=/root/.ethereum init /app/genesis.json"
     volumes:
       - ./pos/data:/root/.ethereum
       - ./pos/config/genesis.json:/app/genesis.json
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
 
   sirama_pos_el:
-    image: "etclabscore/core-geth:version-1.12.14"
+    image: "ethereum/client-go:v1.12.2"
     container_name: sirama_pos_el
     restart: on-failure
     command:
@@ -29,6 +31,10 @@ services:
       - --http.port=8545
       - --http.vhosts=*
       - --http.corsdomain=*
+      - --ws
+      - --ws.api=eth,net,web3
+      - --ws.addr=0.0.0.0
+      - --ws.port=8546
       - --authrpc.vhosts=*
       - --authrpc.addr=0.0.0.0
       - --authrpc.port=8551
@@ -42,12 +48,13 @@ services:
       - --gcmode=full
       - --cache.preimages
       - --crypto.kzg=gokzg
+      - --metrics
       - --metrics.influxdb
       - --metrics.influxdb.endpoint=${INFLUXDB_HOST}
       - --metrics.influxdb.username=${INFLUXDB_USER}
       - --metrics.influxdb.password=${INFLUXDB_PASSWORD}
       - --metrics.influxdb.database=${INFLUXDB_DATABASE}
-      - --metrics.influxdb.tags=\"host=${HOSTNAME}-PoS\"
+      - --metrics.influxdb.tags=host=${HOSTNAME}-PoS
     ports:
       - 48545:8545
       - 48546:8546
@@ -59,6 +66,8 @@ services:
     volumes:
       - ./pos/data:/root/.ethereum
       - ./pos/config:/app/config
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
 
   sirama_pos_cl:
     image: "sigp/lighthouse:v4.5.0" 
@@ -76,7 +85,7 @@ services:
       - --http-address=0.0.0.0
       - --subscribe-all-subnets
       - --http-allow-origin=*
-      - --debug-level=info
+      - --debug-level=debug
       - --datadir=/consensus
       - --testnet-dir=/config
       - --disable-enr-auto-update
@@ -105,7 +114,9 @@ services:
     volumes:
       - ./pos/consensus:/consensus
       - ./pos/config:/config
- 
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+
   sirama_pos_init:
     image: "sigp/lighthouse:v4.5.0"
     container_name: sirama_pos_init
@@ -123,6 +134,8 @@ services:
       - ./pos/config:/config
       - ./pos/validator:/validator
       - ./pos/validator_keys:/validator_keys
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
 
   sirama_pos_vc:
     image: "sigp/lighthouse:v4.5.0"
@@ -143,7 +156,7 @@ services:
       - --metrics-allow-origin=*
       - --datadir=/validator
       - --testnet-dir=/config
-      - --suggested-fee-recipient=0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
+      - --suggested-fee-recipient=0x6416C43ab43FD14A31B71A5FeC3511e0771ECBBD
       - --beacon-nodes=http://sirama_pos_cl:5052
       
     depends_on:
@@ -154,6 +167,8 @@ services:
     volumes:
       - ./pos/config:/config
       - ./pos/validator:/validator
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
     ports:
       - 45062:5062
       - 45064:5064

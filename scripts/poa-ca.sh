@@ -23,7 +23,6 @@ create_account(){
 }
 
 main(){
-    create_password
     create_account
     account=$(cat ./poa/account.txt)
     echo

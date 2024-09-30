@@ -11,7 +11,7 @@
 
 services:
   sirama_poa_init:
-    image: "etclabscore/core-geth:version-1.12.14"
+    image: "ethereum/client-go:v1.12.2"
     container_name: "sirama_poa_init"
     command: --datadir=/root/.ethereum init /app/genesis.json
     volumes:
@@ -19,7 +19,7 @@ services:
       - ./poa/genesis.json:/app/genesis.json
     
   sirama_poa_nodes:
-    image: "etclabscore/core-geth:version-1.12.14"
+    image: "ethereum/client-go:v1.12.2"
     container_name: "sirama_poa_nodes"
     restart: on-failure
     command:
@@ -48,12 +48,13 @@ services:
       - --password=/app/password.txt
       - --mine
       - --miner.etherbase=${POA_ACCOUNT}
+      - --metrics
       - --metrics.influxdb
       - --metrics.influxdb.endpoint=${INFLUXDB_HOST}
       - --metrics.influxdb.username=${INFLUXDB_USER}
       - --metrics.influxdb.password=${INFLUXDB_PASSWORD}
       - --metrics.influxdb.database=${INFLUXDB_DATABASE}
-      - --metrics.influxdb.tags=\"host=${HOSTNAME}-PoA\"
+      - --metrics.influxdb.tags=host=${HOSTNAME}-PoA
     ports:
       - 38545:8545
       - 38546:8546
